@@ -1,5 +1,17 @@
 import streamlit as st
+from streamlit_option_menu import option_menu
+import AppLayout
 
+
+# 2. horizontal menu
+
+def menu_opt(menu_names, icons):
+	menu = option_menu(None, menu_names, 
+    icons=icons, 
+    menu_icon="cast", default_index=1, orientation="horizontal")
+	return menu
+
+#st.markdown("""	1. >>oi	1. **tudo bem**	1. __hello__	""")
 
 import hashlib
 def make_hashes(password):
@@ -32,28 +44,33 @@ def view_all_users():
 	return data
 
 def main():
-
+	al=AppLayout.AppLayout(st)
+	cs=al.call_markdown()
+	al.styleholder.markdown(cs, unsafe_allow_html=True)
 	st.title("ALuBIke App")
 
-	menu = ["Home","Login","Cadastrar"]
-	choice = st.sidebar.selectbox("Menu",menu)
+	menu_names = ["Home", "Login", "Cadastrar"]
+	icons = ['house', 'person', "book"]
+	#choice = st.sidebar.selectbox("Menu",menu)
+	choice = menu_opt(menu_names, icons)
 
 	if choice == "Home":
-		st.subheader("Muito mais que um aluguel, uma transformação em nossa Comunidade!!")
-		st.markdown("""
+		st.subheader("""
+			Muito mais que um aluguel, uma transformação em nossa Comunidade!!""")
+		st.markdown("""<p style="text-align:justify; line-height: 1,1; fonte-size:10px; color: orange">
 			Trazendo uma proposta ousada e desafiadora, propomos o exercício da
 		 cidadania através de uma atitude nobre: Pessoas que como eu e você querem um mundo
 		  melhor, estão disponibilizando suas bicicletas em prol de melhorar a mobilidade 
 		  urbana, pois pessoas que possuem carros podem optar por usar uma bicicleta e ao 
 		  mesmo tempo ajudar de forma real as pessoas que precisam de um transporte para seu
-		   trabalho e até mesmo seu lazer!!!""")
+		   trabalho e até mesmo seu lazer!!!</p>""", unsafe_allow_html=True)
 
 	elif choice == "Login":
 		st.subheader("Escolha aqui sua bicicleta")
 
-		username = st.sidebar.text_input("Nome do Usuário")
-		password = st.sidebar.text_input("Senha",type='password')
-		if st.sidebar.checkbox("Login"):
+		username = st.text_input("Nome do Usuário")
+		password = st.text_input("Senha",type='password')
+		if st.checkbox("Login"):
 
 			create_usertable()
 			hashed_pswd = make_hashes(password)
@@ -82,11 +99,11 @@ def main():
 
 
 	elif choice == "Cadastrar":
-		st.subheader("Criar um novo usuário")
-		new_user = st.sidebar.text_input("Nome")
-		new_password = st.sidebar.text_input("Senha",type='password')
+		st.subheader("Cadastrar novo usuário")
+		new_user = st.text_input("Nome")
+		new_password = st.text_input("Senha",type='password')
 
-		if st.sidebar.button("Cadastrar"):
+		if st.button("Cadastrar"):
 			create_usertable()
 			add_userdata(new_user,make_hashes(new_password))
 			st.success("Parabéns, você agora está cadastrado")
